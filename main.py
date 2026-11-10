@@ -1,4 +1,5 @@
 from default_quizzes import get_default_quizzes
+from quiz import Quiz
 
 
 def show_menu():
@@ -31,6 +32,28 @@ def read_int(prompt, low, high):
             print(f"⚠️ 잘못된 입력입니다. {low}-{high} 사이의 숫자를 입력하세요.")
             continue
         return number
+
+
+def read_text(prompt):
+    """비어 있지 않은 문자열을 입력받아 반환한다. 빈 입력이면 다시 묻는다."""
+    while True:
+        text = input(prompt).strip()
+        if text == "":
+            print("⚠️ 입력이 비어 있습니다.")
+            continue
+        return text
+
+
+def add_quiz(quizzes):
+    """사용자에게 입력받아 새 Quiz를 quizzes에 추가한다."""
+    print("\n📌 새로운 퀴즈를 추가합니다.\n")
+    question = read_text("문제를 입력하세요: ")
+    choices = []
+    for i in range(1, 5):
+        choices.append(read_text(f"선택지 {i}: "))
+    answer = read_int("정답 번호 (1-4): ", 1, 4)
+    quizzes.append(Quiz(question, choices, answer))
+    print("\n✅ 퀴즈가 추가되었습니다!")
 
 
 def play_quiz(quizzes):
@@ -66,6 +89,8 @@ def main():
             choice = read_int("선택: ", 1, 5)
             if choice == 1:
                 play_quiz(quizzes)
+            elif choice == 2:
+                add_quiz(quizzes)
             elif choice == 5:
                 print("프로그램을 종료합니다.")
                 break
