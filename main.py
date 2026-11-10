@@ -1,3 +1,6 @@
+from default_quizzes import get_default_quizzes
+
+
 def show_menu():
     """메뉴 화면을 출력한다."""
     print()
@@ -30,15 +33,44 @@ def read_int(prompt, low, high):
         return number
 
 
+def play_quiz(quizzes):
+    """퀴즈를 모두 출제하고 정답 수를 반환한다. 퀴즈가 없으면 None을 반환한다."""
+    if not quizzes:
+        print("⚠️ 등록된 퀴즈가 없습니다.")
+        return None
+
+    print(f"\n📝 퀴즈를 시작합니다! (총 {len(quizzes)}문제)")
+    correct = 0
+    for number, quiz in enumerate(quizzes, start=1):
+        print("-" * 40)
+        print(f"[문제 {number}]")
+        quiz.show()
+        answer = read_int("\n정답 입력: ", 1, 4)
+        if quiz.is_correct(answer):
+            print("✅ 정답입니다!")
+            correct += 1
+        else:
+            print(f"❌ 오답입니다. 정답은 {quiz.answer}번입니다.")
+
+    print("=" * 40)
+    print(f"🏆 결과: {len(quizzes)}문제 중 {correct}문제 정답!")
+    print("=" * 40)
+    return correct
+
+
 def main():
+    quizzes = get_default_quizzes()
     try:
         while True:
             show_menu()
             choice = read_int("선택: ", 1, 5)
-            if choice == 5:
+            if choice == 1:
+                play_quiz(quizzes)
+            elif choice == 5:
                 print("프로그램을 종료합니다.")
                 break
-            print("(아직 구현되지 않았습니다)")
+            else:
+                print("(아직 구현되지 않았습니다)")
     except (KeyboardInterrupt, EOFError):
         print("\n입력이 중단되어 안전하게 종료합니다.")
 
