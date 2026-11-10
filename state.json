@@ -1,0 +1,65 @@
+{
+    "quizzes": [
+        {
+            "question": "Python에서 정수를 나타내는 자료형은?",
+            "choices": [
+                "int",
+                "str",
+                "bool",
+                "list"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "키(key)와 값(value)을 쌍으로 저장하는 자료형은?",
+            "choices": [
+                "list",
+                "str",
+                "dict",
+                "bool"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "올바른 입력이 올 때까지처럼, 반복 횟수를 모르고 조건이 참인 동안 반복할 때 알맞은 문장은?",
+            "choices": [
+                "for",
+                "if",
+                "def",
+                "while"
+            ],
+            "answer": 4
+        },
+        {
+            "question": "함수가 계산한 결과를 호출한 곳으로 돌려줄 때 사용하는 키워드는?",
+            "choices": [
+                "print",
+                "input",
+                "return",
+                "break"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "클래스로 객체가 만들어질 때 자동으로 실행되는 초기화 메서드는?",
+            "choices": [
+                "__main__",
+                "__init__",
+                "__name__",
+                "__file__"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "int(\"abc\")를 실행하면 발생하는 예외는?",
+            "choices": [
+                "ValueError",
+                "TypeError",
+                "KeyError",
+                "IndexError"
+            ],
+            "answer": 1
+        }
+    ],
+    "best_score": null
+}

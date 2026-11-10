@@ -1,14 +1,108 @@
+import json
+import os
+from pathlib import Path
+
 from default_quizzes import get_default_quizzes
 from input_utils import read_int, read_text
 from quiz import Quiz
+
+# 실행 위치와 상관없이 프로젝트 루트(이 파일이 있는 폴더)에 저장한다.
+STATE_FILE = Path(__file__).resolve().parent / "state.json"
+
+
+def is_valid_quiz_data(data):
+    """dict가 Quiz로 만들 수 있는 올바른 형태인지 확인한다."""
+    if not isinstance(data, dict):
+        return False
+    question = data.get("question")
+    choices = data.get("choices")
+    answer = data.get("answer")
+    if not isinstance(question, str) or question.strip() == "":
+        return False
+    if not isinstance(choices, list) or len(choices) != 4:
+        return False
+    if not all(isinstance(c, str) and c.strip() != "" for c in choices):
+        return False
+    # bool은 int의 하위 타입이므로 따로 제외한다.
+    if not isinstance(answer, int) or isinstance(answer, bool) or not 1 <= answer <= 4:
+        return False
+    return True
+
+
+def is_valid_best_score(best):
+    """최고 점수가 None이거나 올바른 기록(dict)인지 확인한다."""
+    if best is None:
+        return True
+    if not isinstance(best, dict):
+        return False
+    for key in ("score", "correct", "total"):
+        value = best.get(key)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            return False
+    return True
 
 
 class QuizGame:
     """퀴즈 게임 전체(퀴즈 목록, 최고 점수, 메뉴)를 관리한다."""
 
     def __init__(self):
-        self.quizzes = get_default_quizzes()
+        self.quizzes = []
         self.best_score = None  # {"score": 점수, "correct": 정답 수, "total": 문제 수}
+        self.load_state()
+
+    def use_defaults(self):
+        """기본 퀴즈와 초기 점수 상태로 되돌린다."""
+        self.quizzes = get_default_quizzes()
+        self.best_score = None
+
+    def load_state(self):
+        """state.json에서 퀴즈와 최고 점수를 불러온다. 없거나 손상되면 기본값을 쓴다."""
+        try:
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            print("🆕 저장된 데이터가 없어 기본 퀴즈로 시작합니다.")
+            self.use_defaults()
+            return
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            print("⚠️ 저장 파일이 손상되어 기본 퀴즈로 복구합니다.")
+            self.use_defaults()
+            return
+        except OSError as error:
+            print(f"⚠️ 저장 파일을 읽을 수 없어 기본 퀴즈로 시작합니다. ({error})")
+            self.use_defaults()
+            return
+
+        quiz_data = data.get("quizzes") if isinstance(data, dict) else None
+        best = data.get("best_score") if isinstance(data, dict) else None
+        if (
+            not isinstance(quiz_data, list)
+            or not all(is_valid_quiz_data(item) for item in quiz_data)
+            or not is_valid_best_score(best)
+        ):
+            print("⚠️ 저장 파일의 형식이 올바르지 않아 기본 퀴즈로 복구합니다.")
+            self.use_defaults()
+            return
+
+        self.quizzes = [Quiz.from_dict(item) for item in quiz_data]
+        self.best_score = best
+        best_text = "없음" if best is None else f"{best['score']}점"
+        print(f"📂 저장된 데이터를 불러왔습니다. (퀴즈 {len(self.quizzes)}개, 최고점수 {best_text})")
+
+    def save_state(self):
+        """퀴즈와 최고 점수를 state.json에 저장한다. 실패해도 프로그램은 계속 실행된다."""
+        data = {
+            "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+            "best_score": self.best_score,
+        }
+        temp_file = STATE_FILE.with_name(STATE_FILE.name + ".tmp")
+        try:
+            # 임시 파일에 먼저 쓰고 교체해, 저장 도중 꺼져도 기존 파일이 손상되지 않게 한다.
+            with open(temp_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+            os.replace(temp_file, STATE_FILE)
+        except OSError as error:
+            print(f"⚠️ 저장에 실패했습니다. ({error})")
 
     def show_menu(self):
         """메뉴 화면을 출력한다."""
@@ -55,6 +149,7 @@ class QuizGame:
         if self.best_score is None or record["score"] > self.best_score["score"]:
             self.best_score = record
             print("🎉 새로운 최고 점수입니다!")
+            self.save_state()
 
     def add_quiz(self):
         """사용자에게 입력받아 새 Quiz를 추가한다."""
@@ -65,6 +160,7 @@ class QuizGame:
             choices.append(read_text(f"선택지 {i}: "))
         answer = read_int("정답 번호 (1-4): ", 1, 4)
         self.quizzes.append(Quiz(question, choices, answer))
+        self.save_state()
         print("\n✅ 퀴즈가 추가되었습니다!")
 
     def list_quizzes(self):
@@ -107,4 +203,5 @@ class QuizGame:
                     print("프로그램을 종료합니다.")
                     break
         except (KeyboardInterrupt, EOFError):
-            print("\n입력이 중단되어 안전하게 종료합니다.")
+            print("\n입력이 중단되어 저장 후 안전하게 종료합니다.")
+        self.save_state()
