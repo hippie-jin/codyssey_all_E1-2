@@ -94,14 +94,43 @@ def play_quiz(quizzes):
     return correct
 
 
+def make_record(correct, total):
+    """정답 수와 문제 수로 100점 만점 기록(dict)을 만든다."""
+    return {"score": correct * 100 // total, "correct": correct, "total": total}
+
+
+def update_best(best, record):
+    """새 기록이 최고 점수보다 높으면 갱신하고 (최고 기록, 갱신 여부)를 반환한다."""
+    if best is None or record["score"] > best["score"]:
+        return record, True
+    return best, False
+
+
+def show_best(best):
+    """최고 점수를 출력한다. 아직 푼 적이 없으면 안내한다."""
+    if best is None:
+        print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
+        return
+    print(f"\n🏆 최고 점수: {best['score']}점 ({best['total']}문제 중 {best['correct']}문제 정답)")
+
+
 def main():
     quizzes = get_default_quizzes()
+    best = None
     try:
         while True:
             show_menu()
             choice = read_int("선택: ", 1, 5)
             if choice == 1:
-                play_quiz(quizzes)
+                correct = play_quiz(quizzes)
+                if correct is not None:
+                    record = make_record(correct, len(quizzes))
+                    best, is_new = update_best(best, record)
+                    print(f"📊 점수: {record['score']}점")
+                    if is_new:
+                        print("🎉 새로운 최고 점수입니다!")
+            elif choice == 4:
+                show_best(best)
             elif choice == 2:
                 add_quiz(quizzes)
             elif choice == 3:
