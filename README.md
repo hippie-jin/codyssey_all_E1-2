@@ -53,6 +53,38 @@ Python 기본 문법(변수, 자료형, 조건문, 반복문, 함수)과 클래�
 - **자동 저장:** 퀴즈를 추가하거나 최고 점수가 갱신될 때, 종료할 때 `state.json`에 저장합니다.
 - **복구:** `state.json`이 없으면 기본 퀴즈로 시작하고, 손상되었거나 형식이 올바르지 않으면 안내 후 기본 퀴즈로 복구합니다.
 
+## 실행 화면
+
+### 메뉴
+
+![메뉴](docs/screenshots/menu.png)
+
+### 퀴즈 추가
+
+![퀴즈 추가](docs/screenshots/add_quiz.png)
+
+### 퀴즈 목록
+
+![퀴즈 목록](docs/screenshots/list.png)
+
+### 퀴즈 풀기
+
+![퀴즈 풀기 1](docs/screenshots/play_1.png)
+
+![퀴즈 풀기 2](docs/screenshots/play_2.png)
+
+![퀴즈 풀기 3과 결과](docs/screenshots/play_3.png)
+
+### 점수 확인
+
+![점수 확인](docs/screenshots/score.png)
+
+### 재시작 후 데이터 유지
+
+프로그램을 종료하고 다시 실행해도 추가한 퀴즈와 최고 점수가 유지됩니다.
+
+![재시작](docs/screenshots/restart.png)
+
 ## 파일 구조
 
 ```
@@ -63,6 +95,7 @@ Python 기본 문법(변수, 자료형, 조건문, 반복문, 함수)과 클래�
 ├── default_quizzes.py   # 기본 퀴즈 데이터 (Quiz 객체 6개)
 ├── input_utils.py       # 입력 처리 함수 (read_int, read_text)
 ├── state.json           # 퀴즈와 최고 점수 저장 파일
+├── docs/screenshots/    # 실행 화면 스크린샷
 ├── .gitignore
 └── README.md
 ```
