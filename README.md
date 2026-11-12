@@ -160,6 +160,36 @@ Python 기본 문법(변수, 자료형, 조건문, 반복문, 함수)과 클래�
 
 > clone/pull 실습: 복제본에서 추가한 한 줄입니다.
 
+## Git 이력
+
+`git log --oneline --graph --decorate` 결과입니다. 구현을 마친 시점(`f055517`)까지의 이력이며, 이 이력을 README에 추가하는 마지막 커밋은 포함되어 있지 않습니다.
+
+![git log](docs/screenshots/git_log.png)
+
+```
+* f055517 (HEAD -> main, origin/main) Docs: 개발 환경과 개념 정리 추가
+* 547f2f6 최종
+* 5279cc1 Docs: 실핼 화면 스크린샷 추가
+* 473d69f Docs: clone 실습용 README 수정
+* a6bdbac Docs: README 작성
+* 8dd23d7 Feat: state.json 저장/불러오기 구현
+* 06fc5b3 Refactor: QuizGame 책임 분리
+* c6c768b Feat: 최고 점수 기능 구현
+* 062ac02 Feat: 퀴즈 목록 기능 구현
+* bb29391 Feat: 퀴즈 추가 기능 구형
+*   1b33a00 Merge branch 'feature/play'
+|\  
+| * d6e01a1 (feature/play) Feat: 퀴즈 출제 기능 구현
+|/  
+* e98a974 Feat: 기본 퀴즈 데이터 추가
+* e1f118c quiz 클래스 구현
+* 9ff3277 Feat: 메뉴 기능 구현
+* 3700beb Docs: 저장소 초기 설정
+```
+
+- 커밋 16개, 브랜치 `feature/play`를 만들어 작업한 뒤 `main`에 병합(merge 커밋 `1b33a00`)했습니다.
+- clone·pull 실습은 별도 폴더에서 README를 수정해 push(`473d69f`)한 뒤 원본에서 pull해 반영했습니다.
+
 ## 개념 정리
 
 구현하면서 사용한 개념을 정리했습니다. 각 개념이 이 프로젝트의 어느 코드에서 쓰였는지 함께 적었습니다.
