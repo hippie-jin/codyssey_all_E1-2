@@ -59,7 +59,21 @@
                 "IndexError"
             ],
             "answer": 1
+        },
+        {
+            "question": "리스트의 맨 끝에 항목 하나를 추가하는 메서드는?",
+            "choices": [
+                "add",
+                "append",
+                "push",
+                "insert"
+            ],
+            "answer": 2
         }
     ],
-    "best_score": null
+    "best_score": {
+        "score": 100,
+        "correct": 7,
+        "total": 7
+    }
 }
